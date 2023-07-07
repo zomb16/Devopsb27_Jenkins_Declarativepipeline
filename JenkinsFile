@@ -6,7 +6,7 @@ pipeline {
         stage('Clone Git Repo') {
             steps {
                 sh 'rm -rf main'
-                sh 'git clone -b main git@github.com:zomb16/Devopsb27_Jenkins_Declarativepipeline.git'
+                sh 'git clone -b main git@github.com:zomb16/Devopsb27_Jenkins_Declarativepipeline.git main'
                 sh 'ls -al'
             }
         }
@@ -63,4 +63,4 @@ pipeline {
             }
         }
     }
-}
+

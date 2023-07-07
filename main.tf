@@ -11,7 +11,13 @@ terraform {
       source  = "hashicorp/aws"
     }
   }
+    backend "s3" {
+    bucket = "terraformstatebucketb27"
+    key    = "myterraform.tfstate"
+    region = "us-east-1"
+  }
 }
+
 
 resource "aws_vpc" "default" {
   cidr_block           = var.vpc_cidr
