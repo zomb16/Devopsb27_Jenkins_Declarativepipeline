@@ -5,13 +5,13 @@ pipeline {
     stages {
         stage('Clone Git Repo') {
             steps {
-                sh 'rm -rf terraformsingleinstance'
-                sh 'git clone -b engdevopsb06gitpackterr https://github.com/mavrick202/terraformsingleinstance.git'
+                sh 'rm -rf main'
+                sh 'git clone -b main git@github.com:zomb16/Devopsb27_Jenkins_Declarativepipeline.git'
                 sh 'ls -al'
             }
         }
             steps {
-                dir('terraformsingleinstance') {
+                dir('main') {
                     sh 'pwd'
                     sh 'packer build -var-file packer-vars.json packer.json | tee output.txt'
                     sh "tail -2 output.txt | head -2 | awk 'match(\$0, /ami-.*/) { print substr(\$0, RSTART, RLENGTH) }' > ami.txt"
@@ -24,16 +24,26 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
+            when {
+                    expression {
+                        params.PLAN == 'YES'
+                    }
+                }
             steps {
-                dir('terraformsingleinstance') {
+                dir('main') {
                     sh 'terraform init'
                     sh 'terraform plan'
                 }
             }
         }
         stage('Terraform Apply') {
+            when {
+                    expression {
+                        params.APPLY == 'YES'
+                    }
+                }
             steps {
-                dir('terraformsingleinstance') {
+                dir('main') {
                     sh 'terraform init'
                     sh 'terraform apply --auto-approve'
                 }
@@ -42,11 +52,11 @@ pipeline {
         stage('Terraform Destroy') {
             when {
                     expression {
-                        params.DESTROY == 'YES'
+                        params.DESTROY == 'NO'
                     }
                 }
             steps {
-                dir('terraformsingleinstance') {
+                dir('main') {
                     sh 'terraform init'
                     sh 'terraform apply --auto-approve'
                 }
